@@ -1,5 +1,8 @@
 pipeline {
     agent none
+    options {
+        skipStagesAfterUnstable()
+    }    
     stages {
         stage('Build') {
             agent {
@@ -34,7 +37,7 @@ pipeline {
                 IMAGE = 'crdx/pyinstaller-linux:python2'
             }
             steps {
-                dir path:env.BUILD_ID {
+                dir(path: env.BUILD_ID) {
                     unstash(name: 'compiled-results')
                     sh "docker run --rm -v ${VOLUME} ${IMAGE} 'pyinstaller --onefile -F add2vals.py'"
                 }
